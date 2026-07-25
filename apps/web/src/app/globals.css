@@ -114,3 +114,30 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/*
+ * Hero entrance (2026-07-25 motion-polish pass): pure CSS, not Framer
+ * Motion. The Hero component must stay a server component with content in
+ * the initial HTML and zero JS dependency (AC-010) — a JS-driven
+ * initial={opacity:0} would leave the hero invisible forever if JS never
+ * loads. CSS keyframe animations have no such failure mode: they run
+ * without JS, and the reduced-motion block above already forces them to
+ * their end state (visible) in ~0ms when the user prefers no motion.
+ * Apply `.hero-reveal` plus an inline `--hero-reveal-delay` custom
+ * property for staggering (see hero.tsx).
+ */
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-reveal {
+  animation: hero-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--hero-reveal-delay, 0ms);
+}

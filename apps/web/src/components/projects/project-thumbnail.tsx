@@ -12,7 +12,7 @@ export function ProjectThumbnail({ name }: { name: string }) {
   return (
     <div
       aria-hidden="true"
-      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-control border border-border bg-accent-secondary/10 font-mono text-sm font-medium text-accent-secondary"
+      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-control border border-border bg-accent-secondary/10 font-mono text-sm font-medium text-accent-secondary transition-transform duration-200 ease-out group-hover:scale-110"
     >
       {initials}
     </div>

@@ -10,7 +10,7 @@ import { ProjectThumbnail } from "@/components/projects/project-thumbnail";
  */
 export function ProjectCard({ project }: { project: Project }) {
   return (
-    <article className="flex h-full flex-col gap-5 rounded-card border border-border bg-background-raised p-6 sm:p-7">
+    <article className="group flex h-full flex-col gap-5 rounded-card border border-border bg-background-raised p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.16)] sm:p-7">
       <div className="flex items-start gap-4">
         <ProjectThumbnail name={project.name} />
         <div className="min-w-0">
