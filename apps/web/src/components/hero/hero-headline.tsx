@@ -43,9 +43,24 @@ export function HeroHeadline({ id, className, children }: HeroHeadlineProps) {
     if (!headingRef.current || prefersReducedMotion) return;
 
     const split = SplitText.create(headingRef.current, {
-      type: "chars",
+      type: "words, chars",
+      wordsClass: "inline-block",
       charsClass: "inline-block",
     });
+
+    // Lock every character cell to its own natural rendered width *before*
+    // scrambling starts. Without this, swapping a narrow original glyph
+    // (e.g. "i") for a wider scrambled one (e.g. "W") changes that char's
+    // layout width, which cascades into the whole heading reflowing and
+    // rewrapping mid-animation - this was a real, visible bug (words
+    // jumping between lines every frame), not a style nitpick. Fixing the
+    // width turns each character into a stable-width cell that just
+    // displays a different glyph inside it, so the heading's line breaks
+    // never move once measured.
+    for (const charEl of split.chars) {
+      const width = (charEl as HTMLElement).getBoundingClientRect().width;
+      gsap.set(charEl, { display: "inline-block", width, textAlign: "center" });
+    }
 
     const timeline = gsap.timeline();
 
