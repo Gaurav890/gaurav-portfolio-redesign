@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { Magnetic } from "@/components/motion/magnetic";
 import { trackCtaClick } from "@/lib/analytics";
 
 import { ContactActionCard } from "./contact-action-card";
@@ -44,14 +45,16 @@ export function ResumeCta() {
       title="Resume"
       description="One-click PDF, no form to fill out."
     >
-      <a
-        href={RESUME_FILE_PATH}
-        download={RESUME_DOWNLOAD_FILENAME}
-        onClick={handleClick}
-        className="inline-flex items-center gap-2 rounded-control border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-white"
-      >
-        Download resume (PDF)
-      </a>
+      <Magnetic className="inline-block">
+        <a
+          href={RESUME_FILE_PATH}
+          download={RESUME_DOWNLOAD_FILENAME}
+          onClick={handleClick}
+          className="inline-flex items-center gap-2 rounded-control border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-white"
+        >
+          Download resume (PDF)
+        </a>
+      </Magnetic>
       <p aria-live="polite" className="mt-2 h-4 text-xs text-success">
         {feedback === "downloading" && "Downloading…"}
         {feedback === "downloaded" && "Resume downloaded."}

@@ -1,18 +1,22 @@
+import { HeroBackground } from "@/components/hero/hero-background";
+import { HeroHeadline } from "@/components/hero/hero-headline";
+import { HeroStatValue } from "@/components/hero/hero-stat-value";
+
 /**
  * Hero section (T-010, FR-001, AC-001/AC-010).
  *
- * Deliberately a plain server component — no "use client", no Framer Motion
- * wrapper. AC-010 requires name, role framing, and the credibility stats to
- * be present in server-rendered HTML with no JS dependency, matching the
- * reasoning already recorded on the T-001 placeholder this replaces.
+ * The wrapping <section> and all real text content stay plain, server-
+ * rendered markup with no JS dependency (AC-010) — `HeroBackground` is
+ * purely decorative (aria-hidden, absolutely positioned, pointer-events
+ * disabled) and `HeroHeadline`/`HeroStatValue` render their real,
+ * correct text content unconditionally and only layer a client-side
+ * enhancement on top once mounted (see each component's own doc comment
+ * for exactly how they preserve the no-JS/AC-010 guarantee).
  *
- * 2026-07-25 motion-polish pass: added a staggered entrance via the
- * `.hero-reveal` CSS keyframe (globals.css) instead of Framer Motion,
- * specifically because a JS-driven `initial={opacity:0}` would leave this
- * content invisible forever if JS never loads — CSS animations run
- * regardless of JS and the global reduced-motion media query (globals.css)
- * already collapses them to their end state at ~0ms, so AC-010/AC-009 both
- * still hold.
+ * 2026-07-25 animation-upgrade pass (DD-002): added the WebGL generative
+ * background, GSAP SplitText scramble headline, and GSAP count-up stats
+ * on top of the 2026-07-25 motion-polish pass's CSS stagger entrance
+ * (kept below, unchanged, for the surrounding chrome).
  *
  * Usage (wired up by the orchestrator in a later integration pass):
  *
@@ -36,9 +40,11 @@ export function Hero() {
     <section
       id="hero"
       aria-labelledby="hero-heading"
-      className="mx-auto flex min-h-[100svh] max-w-[1100px] flex-col justify-center px-4 py-20 sm:px-6"
+      className="relative mx-auto flex min-h-[100svh] max-w-[1100px] flex-col justify-center overflow-hidden px-4 py-20 sm:px-6"
     >
-      <div className="max-w-2xl">
+      <HeroBackground />
+
+      <div className="relative max-w-2xl">
         <p
           className="hero-reveal font-mono text-xs uppercase tracking-[0.08em] text-foreground-muted"
           style={{ "--hero-reveal-delay": "0ms" } as React.CSSProperties}
@@ -46,13 +52,17 @@ export function Hero() {
           Gaurav Chaulagain
         </p>
 
-        <h1
-          id="hero-heading"
-          className="hero-reveal mt-4 font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl md:text-6xl"
+        <div
+          className="hero-reveal mt-4"
           style={{ "--hero-reveal-delay": "80ms" } as React.CSSProperties}
         >
-          Technical Product Manager — LLMs, AI Agents &amp; Agentic Systems
-        </h1>
+          <HeroHeadline
+            id="hero-heading"
+            className="font-display text-4xl font-medium leading-[1.1] text-foreground sm:text-5xl md:text-6xl"
+          >
+            Technical Product Manager — LLMs, AI Agents &amp; Agentic Systems
+          </HeroHeadline>
+        </div>
 
         <p
           className="hero-reveal mt-6 max-w-xl text-lg leading-relaxed text-foreground-muted"
@@ -75,9 +85,10 @@ export function Hero() {
               }
             >
               <dt className="text-sm text-foreground-muted">{stat.label}</dt>
-              <dd className="font-mono text-3xl font-medium text-accent sm:text-4xl">
-                {stat.value}
-              </dd>
+              <HeroStatValue
+                value={stat.value}
+                className="font-mono text-3xl font-medium text-accent sm:text-4xl"
+              />
             </div>
           ))}
         </dl>

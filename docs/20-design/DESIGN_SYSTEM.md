@@ -67,11 +67,11 @@ Pairing rationale: serif display carries the editorial/narrative warmth; sans bo
 
 ## Motion
 
-Framer Motion, respecting `prefers-reduced-motion` everywhere (AC-009) — when set, all entrance/scroll animations collapse to instant or opacity-only transitions, and the voice-agent's waveform/pulse visualization reduces to a static or minimally-animated indicator rather than a continuous motion loop.
+**Amended by DD-002 (2026-07-25)** — see `docs/20-design/DESIGN_DECISIONS.md` for full rationale. The original restrained-motion budget below is superseded; motion is now a deliberate, technically ambitious layer (Lenis smooth scroll, GSAP/ScrollTrigger choreography, a WebGL hero moment, cursor-magnetic interaction, expressive text/number reveals), not a subtle accent. `prefers-reduced-motion` (AC-009) still governs everything without exception — every new motion surface (Lenis, GSAP timelines, the WebGL element) must have an explicit reduced-motion path that resolves to a static, fully legible end state, not just the original Framer Motion primitives.
 
-- Entrance: content fades/rises in on scroll (12–16px translate, 300–400ms, ease-out) — subtle, editorial, never bouncy or attention-grabbing.
-- The voice-agent waveform is the one place sustained motion is earned (it visualizes real audio activity) — everywhere else, motion is a one-time transition, not a looping decoration.
-- Page transitions and hover states: fast (120–180ms), no motion longer than ~450ms outside the voice agent's own audio-reactive visualization.
+- Entrance/scroll choreography can now use real scroll-linked scrubbing, staggering, and a bolder hero treatment — not capped at 16px/300ms. Still never gratuitous: motion should always be tied to scroll position, hover, or a real state change, not looping decoration outside the voice agent's waveform and any explicitly-approved hero visual.
+- The voice-agent waveform remains the one place *sustained, audio-driven* motion is earned; the new WebGL hero element is a second, explicitly-approved exception to "no looping decoration" — both must still respect reduced motion.
+- Page transitions and micro-interaction hover states stay fast (120–180ms) even as entrance choreography gets more ambitious — snappy feedback and expressive entrance are not in tension.
 
 ## Interaction
 
