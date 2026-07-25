@@ -1,5 +1,6 @@
 "use client";
 
+import { Magnetic } from "@/components/motion/magnetic";
 import { trackCtaClick } from "@/lib/analytics";
 
 import { ContactActionCard } from "./contact-action-card";
@@ -12,13 +13,15 @@ export function EmailCta() {
       title="Email"
       description="Prefer writing? Send a direct email."
     >
-      <a
-        href={`mailto:${CONTACT_EMAIL}`}
-        onClick={() => trackCtaClick("email")}
-        className="inline-flex items-center gap-2 break-all rounded-control border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-white"
-      >
-        {CONTACT_EMAIL}
-      </a>
+      <Magnetic className="inline-block">
+        <a
+          href={`mailto:${CONTACT_EMAIL}`}
+          onClick={() => trackCtaClick("email")}
+          className="inline-flex items-center gap-2 break-all rounded-control border border-accent px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent hover:text-white"
+        >
+          {CONTACT_EMAIL}
+        </a>
+      </Magnetic>
     </ContactActionCard>
   );
 }

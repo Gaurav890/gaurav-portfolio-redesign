@@ -3,6 +3,7 @@ import { Fraunces, IBM_Plex_Mono, Inter } from "next/font/google";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { LenisProvider } from "@/components/motion/lenis-provider";
 import { AnalyticsProvider } from "@/lib/analytics";
 import "./globals.css";
 
@@ -43,6 +44,7 @@ export default function RootLayout({
       className={`${fraunces.variable} ${inter.variable} ${plexMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">
+        <LenisProvider />
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
