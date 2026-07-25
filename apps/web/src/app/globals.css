@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/*
+ * Design tokens — semantic roles, not raw palette dumps.
+ * Source of truth: docs/20-design/DESIGN_SYSTEM.md ("Color", "Typography",
+ * "Radius, border, elevation"). Do not hardcode hex values in components —
+ * always reference the semantic Tailwind utilities generated below
+ * (bg-background, text-foreground, border-border, text-accent, etc.).
+ */
+:root {
+  /* Color — light mode (default) */
+  --background: #faf6ef; /* warm paper */
+  --background-raised: #ffffff; /* cards, panels, voice-agent surface */
+  --foreground: #231f1b; /* warm near-black ink */
+  --foreground-muted: #6b6259; /* secondary text, captions, metadata */
+  --accent: #c6552b; /* warm terracotta — primary action, voice agent */
+  --accent-secondary: #2f5d50; /* deep forest teal — tags, in-prose links */
+  --border: #e4d9c7; /* hairlines, dividers, input borders */
+  --danger: #b3261e; /* errors, failed voice session */
+  --success: #3e6b4f; /* confirmations */
+
+  /* Radius */
+  --radius-control: 0.5rem; /* 8px — buttons, inputs */
+  --radius-card: 0.75rem; /* 12px — cards, panels */
+  --radius-panel: 1.25rem; /* 20px — voice-agent surface */
+}
+
+/* Color — dark mode, system preference */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #1c1712; /* warm espresso, not pure black */
+    --background-raised: #26201a;
+    --foreground: #f3ece1; /* warm cream */
+    --foreground-muted: #b3a896;
+    --accent: #e37a4c; /* brighter terracotta for dark-mode contrast */
+    --accent-secondary: #5aa290;
+    --border: #3a322a;
+    --danger: #f2897f;
+    --success: #79c29a;
+  }
+}
+
+/* Manual theme override hooks (for a future theme toggle) — win over the
+ * system preference above in either direction. */
+:root[data-theme="light"] {
+  --background: #faf6ef;
+  --background-raised: #ffffff;
+  --foreground: #231f1b;
+  --foreground-muted: #6b6259;
+  --accent: #c6552b;
+  --accent-secondary: #2f5d50;
+  --border: #e4d9c7;
+  --danger: #b3261e;
+  --success: #3e6b4f;
+}
+
+:root[data-theme="dark"] {
+  --background: #1c1712;
+  --background-raised: #26201a;
+  --foreground: #f3ece1;
+  --foreground-muted: #b3a896;
+  --accent: #e37a4c;
+  --accent-secondary: #5aa290;
+  --border: #3a322a;
+  --danger: #f2897f;
+  --success: #79c29a;
+}
+
+@theme inline {
+  /* Semantic color utilities: bg-background, text-foreground, border-border,
+   * text-accent, bg-accent-secondary, text-danger, text-success, etc. */
+  --color-background: var(--background);
+  --color-background-raised: var(--background-raised);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
+  --color-border: var(--border);
+  --color-danger: var(--danger);
+  --color-success: var(--success);
+
+  /* Radius utilities: rounded-control, rounded-card, rounded-panel */
+  --radius-control: var(--radius-control);
+  --radius-card: var(--radius-card);
+  --radius-panel: var(--radius-panel);
+
+  /* Typography roles: font-display (serif), font-sans (body), font-mono (labels) */
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-plex-mono);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+/* Visible focus ring everywhere — never suppressed (DESIGN_SYSTEM.md Accessibility). */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Global reduced-motion safety net. The Framer Motion components in
+ * src/lib/motion also check this explicitly via usePrefersReducedMotion(),
+ * but this catches any plain CSS transition/animation too. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
