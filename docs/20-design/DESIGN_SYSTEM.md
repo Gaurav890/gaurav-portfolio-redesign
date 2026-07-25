@@ -79,6 +79,10 @@ Pairing rationale: serif display carries the editorial/narrative warmth; sans bo
 - The three contact CTAs (Calendly, email, resume) share equal visual weight as a group (FR-002's "incorporate all" decision) but are visually distinguished from the voice agent's single, more prominent "Talk to Gaurav" entry point, which functions as the page's signature interaction, not just a fourth button in that row.
 - Forms (contact, Notes comments): inline validation on blur, not just on submit; clear success/error states per PRD §9.
 
+## Content pacing (DD-003)
+
+**See `docs/20-design/DESIGN_DECISIONS.md` DD-003 for full rationale.** Any section with genuine narrative depth (About first) defaults to a short hook excerpt + "Continue reading," where expansion reveals the rest as discrete, generously-spaced beats with their own entrance choreography — not one continuous block of paragraphs, and not a plain show-more toggle that just relocates the wall of text. Reserved for sections with real narrative depth; information-dense sections (Projects, Experience, Credentials) stay scannable per the P-001 hiring-manager persona's time-pressured skim path — do not apply chaptered pacing to those by default.
+
 ## Responsive strategy
 
 Mobile-first. Verify at minimum: 390px (mobile), 768px (tablet), 1440px (desktop) per AC-008. The voice-agent surface in particular needs a distinct mobile treatment (likely a full-screen takeover on mobile vs. an inline/side panel on desktop) — specify this concretely once the ADR-001 amendment confirms the final interaction model for voice vs. text mode.
