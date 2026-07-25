@@ -1,4 +1,6 @@
 import { FadeIn } from "@/components/motion/fade-in";
+import { StaggerItem } from "@/components/motion/stagger-item";
+import { StaggerReveal } from "@/components/motion/stagger-reveal";
 import { ProjectCard } from "@/components/projects/project-card";
 import { PROJECTS } from "@/components/projects/projects-data";
 
@@ -37,11 +39,13 @@ export function ProjectsSection() {
         </p>
       </header>
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2">
+      <StaggerReveal className="mt-10 grid gap-6 sm:grid-cols-2">
         {PROJECTS.map((project) => (
-          <ProjectCard key={project.slug} project={project} />
+          <StaggerItem key={project.slug}>
+            <ProjectCard project={project} />
+          </StaggerItem>
         ))}
-      </div>
+      </StaggerReveal>
     </FadeIn>
   );
 }

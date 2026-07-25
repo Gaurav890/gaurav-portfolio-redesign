@@ -10,9 +10,17 @@ import { PRIMARY_NAV } from "@/lib/navigation";
  * toggle below the `sm` breakpoint so nav never causes horizontal scroll or
  * clipped content at 390px (FR-011). Fully keyboard-operable: the toggle is
  * a real `button` with `aria-expanded`, and Escape closes the menu.
+ *
+ * 2026-07-25 motion-polish pass: the header picks up a blurred backdrop and
+ * a soft shadow once the page scrolls past the hero, instead of a static
+ * flat bar the whole way down — a small "alive" touch requested after
+ * feedback that the site felt static. Purely a background/shadow/backdrop
+ * change (no layout shift, no reduced-motion implications — it's a
+ * threshold toggle, not a continuous animation).
  */
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const menuId = useId();
 
   useEffect(() => {
@@ -26,8 +34,24 @@ export function SiteHeader() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isMenuOpen]);
 
+  useEffect(() => {
+    function handleScroll() {
+      setIsScrolled(window.scrollY > 24);
+    }
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <header className="border-b border-border bg-background">
+    <header
+      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+        isScrolled
+          ? "border-border bg-background/80 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md"
+          : "border-transparent bg-background"
+      }`}
+    >
       <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link
           href="/"
