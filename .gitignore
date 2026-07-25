@@ -34,3 +34,4 @@ playwright-report/
 tmp/
 .cache/
 *.log
+.playwright-mcp/
