@@ -3,6 +3,7 @@ import { Fraunces, IBM_Plex_Mono, Inter } from "next/font/google";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { AnalyticsProvider } from "@/lib/analytics";
 import "./globals.css";
 
 // Typography roles per docs/20-design/DESIGN_SYSTEM.md "Typography":
@@ -45,6 +46,7 @@ export default function RootLayout({
         <SiteHeader />
         <main className="flex-1">{children}</main>
         <SiteFooter />
+        <AnalyticsProvider />
       </body>
     </html>
   );
