@@ -11,12 +11,20 @@ import { PRIMARY_NAV } from "@/lib/navigation";
  * clipped content at 390px (FR-011). Fully keyboard-operable: the toggle is
  * a real `button` with `aria-expanded`, and Escape closes the menu.
  *
- * 2026-07-25 motion-polish pass: the header picks up a blurred backdrop and
- * a soft shadow once the page scrolls past the hero, instead of a static
- * flat bar the whole way down — a small "alive" touch requested after
- * feedback that the site felt static. Purely a background/shadow/backdrop
- * change (no layout shift, no reduced-motion implications — it's a
- * threshold toggle, not a continuous animation).
+ * 2026-07-25 motion-polish pass: the header picks up a soft shadow and a
+ * visible bottom border once the page scrolls past the hero, instead of a
+ * static flat bar the whole way down — a small "alive" touch requested
+ * after feedback that the site felt static. No layout shift, no
+ * reduced-motion implications (a threshold toggle, not a continuous
+ * animation).
+ *
+ * 2026-07-25 critic-pass fix: this originally also added `backdrop-blur-md`
+ * at the same threshold. An adversarial design-critic review correctly
+ * flagged that against DESIGN_SYSTEM.md's own explicit anti-pattern list,
+ * which names glassmorphism/excessive backdrop-blur directly - a
+ * one-off blur on the nav isn't worth quietly contradicting a documented
+ * design decision. Dropped in favor of a fully opaque background; the
+ * shadow/border threshold alone still delivers the "alive on scroll" cue.
  */
 export function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,10 +54,10 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b transition-colors duration-300 ${
+      className={`sticky top-0 z-40 border-b bg-background transition-colors duration-300 ${
         isScrolled
-          ? "border-border bg-background/80 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md"
-          : "border-transparent bg-background"
+          ? "border-border shadow-[0_1px_0_rgba(0,0,0,0.04)]"
+          : "border-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-6">

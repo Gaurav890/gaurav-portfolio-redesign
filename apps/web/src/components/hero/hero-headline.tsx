@@ -34,6 +34,21 @@ type HeroHeadlineProps = {
  * (it manages the accessible text/reading order independently of the
  * per-character DOM split), so this does not need a manual aria-label
  * workaround the way older SplitText usage patterns did.
+ *
+ * 2026-07-25 critic-pass fix: the character-width lock below is only ever
+ * correct for the viewport size it was measured at. The original version
+ * of this component left those fixed-width spans in the DOM permanently
+ * (only reverted on unmount), so a real user resizing their window, or
+ * rotating a tablet, after the ~1.5s scramble finished would see the
+ * heading's characters overlap or spread apart with gaps - a regression
+ * into the exact "headline visibly breaks" complaint this component was
+ * already fixed for once this session. Fixed by reverting SplitText's DOM
+ * changes back to plain text (a) automatically once the scramble
+ * animation completes, and (b) immediately on any window resize, so the
+ * fixed-width spans never outlive the brief window where they're valid.
+ * After revert, the heading is just its normal responsive text - no
+ * animation replays on resize, which is correct: this is a one-time
+ * entrance effect, not something that should re-trigger.
  */
 export function HeroHeadline({ id, className, children }: HeroHeadlineProps) {
   const headingRef = useRef<HTMLHeadingElement>(null);
@@ -43,11 +58,35 @@ export function HeroHeadline({ id, className, children }: HeroHeadlineProps) {
     if (!headingRef.current || prefersReducedMotion) return;
 
     const split = SplitText.create(headingRef.current, {
-      type: "chars",
+      type: "words, chars",
+      wordsClass: "inline-block",
       charsClass: "inline-block",
     });
 
-    const timeline = gsap.timeline();
+    // Lock every character cell to its own natural rendered width *before*
+    // scrambling starts. Without this, swapping a narrow original glyph
+    // (e.g. "i") for a wider scrambled one (e.g. "W") changes that char's
+    // layout width, which cascades into the whole heading reflowing and
+    // rewrapping mid-animation - this was a real, visible bug (words
+    // jumping between lines every frame), not a style nitpick. Fixing the
+    // width turns each character into a stable-width cell that just
+    // displays a different glyph inside it, so the heading's line breaks
+    // never move once measured. This lock is only ever valid until the
+    // next resize or the animation's own completion - see revertOnce below.
+    for (const charEl of split.chars) {
+      const width = (charEl as HTMLElement).getBoundingClientRect().width;
+      gsap.set(charEl, { display: "inline-block", width, textAlign: "center" });
+    }
+
+    let hasReverted = false;
+    function revertOnce() {
+      if (hasReverted) return;
+      hasReverted = true;
+      timeline.kill();
+      split.revert();
+    }
+
+    const timeline = gsap.timeline({ onComplete: revertOnce });
 
     split.chars.forEach((charEl, index) => {
       const originalChar = charEl.textContent ?? "";
@@ -74,9 +113,15 @@ export function HeroHeadline({ id, className, children }: HeroHeadlineProps) {
       );
     });
 
+    // Defense in depth: if a resize happens *during* the brief scramble
+    // window (before the onComplete revert above has fired), don't let the
+    // now-stale fixed widths linger even for one extra frame - jump
+    // straight to the real, correctly-reflowing text instead.
+    window.addEventListener("resize", revertOnce);
+
     return () => {
-      timeline.kill();
-      split.revert();
+      window.removeEventListener("resize", revertOnce);
+      revertOnce();
     };
   }, [prefersReducedMotion]);
 

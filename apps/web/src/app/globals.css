@@ -141,3 +141,26 @@ body {
   animation: hero-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: var(--hero-reveal-delay, 0ms);
 }
+
+/*
+ * About section expanded beats (T-011 restructure, DD-003): defense-in-
+ * depth for the narrative beats revealed by "Continue reading", which use
+ * Framer Motion's scroll-triggered `whileInView` for per-beat entrance
+ * choreography (about.tsx). Framer Motion applies its "hidden" variant
+ * (opacity:0) as an inline style during server rendering; if JavaScript
+ * never loads/hydrates, nothing ever transitions that to "visible", which
+ * would leave this text permanently invisible even though the native
+ * <details> disclosure itself opens/closes with zero JS. The `scripting`
+ * media feature explicitly detects a no-JS environment (supported in
+ * Chromium, Firefox, and Safari 17+) and forces these elements back to
+ * their fully visible, non-transformed resting state in that case. This is
+ * a defense-in-depth layer, not a guarantee on every browser — the always-
+ * visible hook excerpt above the "Continue reading" control carries the
+ * real no-JS guarantee (see about.tsx's doc comment).
+ */
+@media (scripting: none) {
+  .about-beat-paragraph {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

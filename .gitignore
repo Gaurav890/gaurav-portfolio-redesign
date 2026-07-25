@@ -35,3 +35,10 @@ tmp/
 .cache/
 *.log
 .playwright-mcp/
+
+# Stray Playwright/agent evidence screenshots that land at repo root
+# (shared browser session cross-talk across concurrent agents/worktrees
+# writes here regardless of cwd) - never a deliverable, always cleanup.
+/*.png
+/*.jpg
+/*.jpeg

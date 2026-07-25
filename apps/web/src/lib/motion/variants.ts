@@ -38,17 +38,34 @@ export const INTERACTION_TRANSITION: Transition = {
  */
 export function getFadeInUp(prefersReducedMotion: boolean): Variants {
   if (prefersReducedMotion) {
-    // Explicitly pin y/scale to their resting values in both states (not
-    // just omit them) — the `usePrefersReducedMotion` hook can only report
-    // its real value after hydration (server-safe default is "false"), so
-    // this factory can be called with `false` on first client render and
-    // `true` moments later once corrected. If the reduced variant left
-    // y/scale unspecified here, Framer Motion would leave whatever
-    // transform was already applied by the non-reduced "hidden" state
-    // permanently stuck instead of resetting it, since it only animates
-    // properties a variant defines.
+    // Explicitly pin y/scale/opacity to their final resting values in
+    // *both* states (not just omit them, and critically not opacity:0 in
+    // "hidden" either - see the 2026-07-25 critic-pass fix below).
+    //
+    // The `usePrefersReducedMotion` hook can only report its real value
+    // after hydration (server-safe default is "false"), so this factory
+    // can be called with `false` on first client render and `true`
+    // moments later once corrected. If the reduced variant left y/scale
+    // unspecified here, Framer Motion would leave whatever transform was
+    // already applied by the non-reduced "hidden" state permanently stuck
+    // instead of resetting it, since it only animates properties a
+    // variant defines.
+    //
+    // 2026-07-25 critic-pass fix: this used to be `opacity: 0` in
+    // "hidden", on the assumption that `whileInView`'s near-zero-duration
+    // transition to "visible" was enough to satisfy AC-09/reduced-motion.
+    // It wasn't: Framer Motion applies the "hidden" variant immediately
+    // and unconditionally on mount (it is NOT scroll-gated - only the
+    // *transition* to "visible" is), so any content below the fold sat at
+    // real `opacity:0` - confirmed in raw SSR HTML - until a user actually
+    // scrolled it into the trigger zone. For reduced-motion users that's
+    // worse than no animation at all: content that should be immediately,
+    // statically present was invisible until a scroll gesture triggered
+    // it. Setting `hidden.opacity` to `1` (matching "visible" in every
+    // property) makes the initial mount state already fully resolved -
+    // nothing left to reveal, so nothing is gated behind scroll position.
     return {
-      hidden: { opacity: 0, y: 0, scale: 1 },
+      hidden: { opacity: 1, y: 0, scale: 1 },
       visible: {
         opacity: 1,
         y: 0,

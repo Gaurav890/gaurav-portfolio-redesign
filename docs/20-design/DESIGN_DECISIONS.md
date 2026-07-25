@@ -38,3 +38,30 @@
 **Evidence:** To be validated the same way as DD-001 — Playwright-inspected across breakpoints/themes/reduced-motion, plus explicit before/after performance verification (T-072) given the new WebGL/GSAP bundle weight this decision knowingly introduces.
 
 **Revisit trigger:** If the WebGL hero element measurably regresses NFR-001's LCP budget and can't be optimized further, or if Lenis/GSAP interaction genuinely conflicts with AC-009/AC-010 in a way that can't be resolved through the gating described above — surface to Gaurav rather than silently scaling back.
+
+---
+
+## DD-003 — Narrative pacing and information architecture: chaptered scroll storytelling
+
+**Date:** 2026-07-25
+
+**Decision:** Neither DD-001 (palette/typography) nor DD-002 (motion budget) addressed the thing actually missing: *pacing*. Explicit reference given: apple.com and apple.com/apple-watch-series-11 — not their visual language (no glass, no product-photography dependency, none of that transfers to a text/narrative personal site), but their **structural discipline**: one idea per screen, generous vertical space between beats, each new scroll position revealing a considered next moment rather than a dense continuous scroll of paragraphs. This site's current failure mode, named directly: the About section is 27 paragraphs of real, excellent writing presented as one undifferentiated block — exactly the "wall of text" Apple's pacing model never produces.
+
+**The concrete pattern this establishes, to be applied wherever a section has real narrative depth (About first, then anywhere else it fits):**
+
+1. **A hook state by default.** The section opens with a short excerpt — one strong beat of the writing (not a summary written separately from it; an actual excerpt of Gaurav's real words) plus a clear "Continue reading" affordance. Never force the full 27-paragraph block on every visitor by default.
+2. **Expansion is itself a scroll journey, not a text dump.** "Continue reading" doesn't unhide one long scrollable block — it reveals the narrative broken into discrete beats (the Ronaldo/hard-work beat, the Dr. Birkhe/access beat, the closing belief statement), each getting its own generously-spaced moment as the user scrolls through, with real entrance choreography per beat. This satisfies both the literal ask ("continue reading and expand") and the structural one ("user journey that wows") with one mechanism, not two competing ones.
+3. **Typography carries the pacing.** Beats that deserve emphasis (the two pull-quote lines already identified in `COPY.md`) get real display-scale treatment at these moments, not the same body-text size as connective paragraphs around them — size and rhythm are the primary hierarchy tool, matching this document's existing typography-as-hierarchy principle, not a new one.
+4. **This is a content-architecture decision, not a one-off animation request.** Any future section with comparable depth (a Notes post, a long project write-up) should default to this pattern rather than a flat scroll of text, so the site doesn't develop two competing narrative conventions.
+
+**What this explicitly does NOT mean** (guarding against the generic-AI-SaaS failure modes named directly in the brief that prompted this decision):
+- Not a bento grid, not three-column feature cards, not glassmorphism, not a floating-blob hero, not decorative icons next to every heading, not center-aligned everything, not fake stats/testimonials — none of that is what "Apple-tier" means here. It means *pacing discipline and typographic confidence*, which is a much narrower and more defensible thing to borrow than Apple's visual system.
+- Not a license to make every section scroll-heavy for its own sake — this pattern is reserved for sections with genuine narrative depth (About today). Projects/Experience/Credentials stay information-dense and scannable per DD-001's original P-001 (hiring-manager, time-pressured) reasoning; turning those into slow scroll journeys too would actively fight that persona's actual job.
+
+**Context:** Direct feedback, 2026-07-25: the assembled site (post DD-002's motion-upgrade pass) still read as "basic," specifically calling out the About section's length with no progressive disclosure, and naming apple.com's pacing as the standard to study. Delivered alongside an extensive frontend-quality brief now also codified in `.claude/agents/frontend.md`'s "Frontend Quality Bar" section: visual thesis before code, a build/critic role separation, full UI-state coverage, and an explicit list of generic-AI-interface anti-patterns to actively avoid.
+
+**Alternatives considered:** A simple show-more/show-less toggle on the existing single block — rejected as satisfying the literal words ("continue reading and expand") while missing the actual point (a toggle doesn't create a "journey," it just relocates the wall of text one click later). Rewriting/shortening the About copy itself — rejected; the writing is real, considered, and already locked as source-of-truth in `COPY.md` (see `docs/20-design/COPY.md`'s note that copy must not be altered for facts or trimmed, only reflowed for layout) — the fix is presentation architecture, not editing Gaurav's words down.
+
+**Evidence:** To be built by a dedicated frontend-agent pass, then verified by a separate, adversarial critic pass (per the same brief's explicit builder/critic separation requirement) before being considered done — see `docs/40-execution/CURRENT_STATE.md` for in-progress status.
+
+**Revisit trigger:** If the expanded chaptered-scroll treatment measurably increases time-to-first-contact-action for the P-001 hiring-manager persona (i.e. it becomes a tax on the time-pressured skim path rather than an optional deeper read) — the hook-state default specifically exists to prevent this, but confirm via the critic pass and real usage, not just Gaurav's or the builder's own assessment.
