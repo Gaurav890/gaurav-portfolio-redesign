@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 /**
  * Progressive-enhancement layer for the About section's native
@@ -23,11 +23,28 @@ import { useEffect, useRef } from "react";
  * operable disclosure control (per the tabIndex/keyboard behavior above)
  * — it just won't announce its expanded/collapsed state to assistive
  * tech, which is a real but bounded degradation, not a broken control.
+ *
+ * 2026-07-25 critic-pass fix: under real-world slow-network conditions
+ * (throttled CPU/network, representative of PERSONAS.md's P-001 "may be
+ * on mobile... possibly slow network"), a visitor could click the native
+ * disclosure before this effect had attached its listener, leaving
+ * `aria-expanded` unset even though the disclosure itself had genuinely
+ * opened. `useLayoutEffect` (fires synchronously right after DOM
+ * mutation, before paint) attaches the listener as early as this
+ * component's own lifecycle allows - it narrows the race window
+ * (this component still can't attach anything before React itself
+ * hydrates) but does not fully eliminate a true pre-hydration click.
+ * `about.tsx`'s `suppressHydrationWarning` on the `<details>` element
+ * handles the other half of that same race: it stops React from
+ * resetting a pre-hydration toggle back to "closed" during
+ * reconciliation, so once this effect *does* attach, `syncExpandedState`
+ * below reads the real, correct `open` value rather than a value React
+ * silently reverted.
  */
 export function AboutExpandA11y() {
   const observedRef = useRef<HTMLDetailsElement | null>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const details = document.getElementById("about-expand") as HTMLDetailsElement | null;
     const summary = details?.querySelector("summary");
     if (!details || !summary) return;

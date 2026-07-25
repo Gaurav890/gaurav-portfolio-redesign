@@ -130,11 +130,20 @@ export function About() {
 
       <AboutExpandA11y />
 
-      <details id="about-expand" className="group mt-8">
+      {/* suppressHydrationWarning (2026-07-25 critic-pass fix): a visitor
+          who clicks/taps this native <details> disclosure before React
+          finishes hydrating gets a real, working toggle for free (native
+          browser behavior needs zero JS) - but React's hydration
+          reconciliation was logging a console error and, worse, could
+          reset that pre-hydration interaction back to the server-rendered
+          "closed" state, since it assumes the DOM must exactly match its
+          last render output. This element's `open` state is intentionally
+          allowed to diverge from that assumption. */}
+      <details id="about-expand" className="group mt-8" suppressHydrationWarning>
         <summary
           role="button"
           aria-controls="about-beats"
-          className="flex cursor-pointer list-none items-center gap-3 rounded-control border border-border px-5 py-3.5 text-sm font-medium text-foreground transition-colors hover:border-accent hover:text-accent [&::-webkit-details-marker]:hidden"
+          className="flex cursor-pointer list-none items-center gap-3 rounded-control border border-border px-5 py-3.5 text-sm font-medium text-foreground transition-colors hover:border-accent [&::-webkit-details-marker]:hidden"
         >
           <span className="group-open:hidden">
             Continue reading
