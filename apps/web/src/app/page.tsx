@@ -1,121 +1,31 @@
+import { About } from "@/components/about/about";
+import { ContactActions } from "@/components/contact-actions";
+import { CredentialsSection } from "@/components/credentials/credentials-section";
+import { EventsSection } from "@/components/events/events-section";
+import { Experience } from "@/components/experience/experience";
+import { Hero } from "@/components/hero/hero";
 import { FadeIn } from "@/components/motion/fade-in";
+import { ProjectsSection } from "@/components/projects/projects-section";
 
 /**
- * Bare-bones home page shell (T-001). Each section below is a placeholder
- * landing spot for later content tasks — do not add real hero/about/
- * experience/projects/events/contact content here (T-010 through T-016).
+ * Home page assembly (integration pass after T-010–T-016/T-050). Each
+ * section component owns its own <section id="..."> landmark and is
+ * self-contained per its own files_owned scope in TASKS.jsonl — this file
+ * only orders and composes them. ContactActions is the one exception: it
+ * deliberately does not render its own section wrapper (see its own
+ * doc comment), so the "contact" landmark stays here, alongside a
+ * placeholder for the contact form itself (T-021, not yet implemented -
+ * the backend at T-020 is done, but no form UI calls it yet).
  */
 export default function Home() {
   return (
     <>
-      {/* Hero placeholder — rendered plain (no client animation) so core
-          identity content stays in server-rendered HTML with no JS
-          dependency, per FR-001/AC-010. Built out in T-010. */}
-      <section
-        id="hero"
-        aria-labelledby="hero-heading"
-        className="mx-auto max-w-[1100px] px-4 py-24 sm:px-6"
-      >
-        <p className="font-mono text-xs uppercase tracking-wide text-foreground-muted">
-          Portfolio — under construction
-        </p>
-        <h1
-          id="hero-heading"
-          className="mt-4 max-w-2xl font-display text-4xl font-medium leading-tight text-foreground sm:text-5xl"
-        >
-          Gaurav Chaulagain
-        </h1>
-        <p className="mt-4 max-w-xl text-lg text-foreground-muted">
-          Hero content, role framing, and credibility stats land here in
-          T-010.
-        </p>
-      </section>
-
-      <FadeIn
-        as="section"
-        id="about"
-        aria-labelledby="about-heading"
-        className="mx-auto max-w-[680px] px-4 py-16 sm:px-6"
-      >
-        <h2
-          id="about-heading"
-          className="font-display text-2xl font-medium text-foreground"
-        >
-          About
-        </h2>
-        <p className="mt-3 text-foreground-muted">
-          Narrative About section lands here in T-011.
-        </p>
-      </FadeIn>
-
-      <FadeIn
-        as="section"
-        id="experience"
-        aria-labelledby="experience-heading"
-        className="mx-auto max-w-[1100px] px-4 py-16 sm:px-6"
-      >
-        <h2
-          id="experience-heading"
-          className="font-display text-2xl font-medium text-foreground"
-        >
-          Experience
-        </h2>
-        <p className="mt-3 text-foreground-muted">
-          Experience timeline lands here in T-012.
-        </p>
-      </FadeIn>
-
-      <FadeIn
-        as="section"
-        id="projects"
-        aria-labelledby="projects-heading"
-        className="mx-auto max-w-[1100px] px-4 py-16 sm:px-6"
-      >
-        <h2
-          id="projects-heading"
-          className="font-display text-2xl font-medium text-foreground"
-        >
-          Featured projects
-        </h2>
-        <p className="mt-3 text-foreground-muted">
-          Six featured projects (ELDA.AI, Aakha.org, NepalElection.chat,
-          vocal-stack, AquaOracle, Dr. Birkhe) land here in T-013.
-        </p>
-      </FadeIn>
-
-      <FadeIn
-        as="section"
-        id="events"
-        aria-labelledby="events-heading"
-        className="mx-auto max-w-[1100px] px-4 py-16 sm:px-6"
-      >
-        <h2
-          id="events-heading"
-          className="font-display text-2xl font-medium text-foreground"
-        >
-          Events
-        </h2>
-        <p className="mt-3 text-foreground-muted">
-          Attended/upcoming events land here in T-014.
-        </p>
-      </FadeIn>
-
-      <FadeIn
-        as="section"
-        id="credentials"
-        aria-labelledby="credentials-heading"
-        className="mx-auto max-w-[1100px] px-4 py-16 sm:px-6"
-      >
-        <h2
-          id="credentials-heading"
-          className="font-display text-2xl font-medium text-foreground"
-        >
-          Education, achievements &amp; community
-        </h2>
-        <p className="mt-3 text-foreground-muted">
-          Education/achievements/community content lands here in T-015.
-        </p>
-      </FadeIn>
+      <Hero />
+      <About />
+      <Experience />
+      <ProjectsSection />
+      <EventsSection />
+      <CredentialsSection />
 
       <FadeIn
         as="section"
@@ -129,10 +39,17 @@ export default function Home() {
         >
           Contact
         </h2>
-        <p className="mt-3 text-foreground-muted">
-          Contact CTAs (Calendly/email/resume) and the contact form land here
-          in T-016/T-020/T-021.
+        <p className="mt-3 max-w-xl text-foreground-muted">
+          Book a call, send an email, or grab the resume — whichever&apos;s
+          easiest.
         </p>
+
+        <div className="mt-8">
+          <ContactActions />
+        </div>
+
+        {/* Contact form (T-021) lands here once built - the backend
+            (/api/contact, T-020) is already implemented and tested. */}
       </FadeIn>
     </>
   );
